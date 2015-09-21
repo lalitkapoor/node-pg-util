@@ -162,6 +162,7 @@ describe('pg-util', function() {
       }
 
       await this.db.query(client, 'ABORT')
+      client.done()
     })
   })
 })
