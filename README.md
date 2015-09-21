@@ -11,14 +11,13 @@ The goal of this library is to make writing commons database tasks more succinct
 
 All the methods returns promises and if you use the new `async/await` features in ES7 you can write some nifty code. Check out some of the examples:
 
-### Transactions
+#### Transactions
 ```javascript
 import pg from 'pg'
 import pgUtil from 'pg-util'
-import appRoot from 'app-root-path'
 
-(function(){
-  db = pgUtil()
+(async function() {
+  const db = pgUtil()
 
   const createTableSQL = `CREATE TABLE boo (
     name TEXT NOT NULL,
@@ -53,24 +52,24 @@ import appRoot from 'app-root-path'
 })()
 ```
 
-### Execute a paramterized query using a SQL file
+#### Execute a paramterized query using a SQL file and get the first row
 
 ```sql
--- select-param.sql file
+-- ./resources/tests/sql/select-param.sql file
 SELECT $1::text AS "name";
 ```
 
 ```javascript
+import path from 'path'
 import pg from 'pg'
 import pgUtil from 'pg-util'
 import appRoot from 'app-root-path'
 
-(function(){
+(async function() {
   const pathToSQLFiles = path.join(appRoot.path, '/resources/tests/sql')
-  db = pgUtil(null, pathToSQLFiles)
+  const db = pgUtil(null, pathToSQLFiles)
 
   const row = await db.first('select-param', ['John Doe'])
-  client.done()
   should.equal(row.name, 'John Doe')
 })()
 ```
