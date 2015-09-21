@@ -1,5 +1,5 @@
 {
-  "name": "node-pg-util",
+  "name": "pg-util",
   "version": "1.2.1",
   "description": "postgresql utils - using promises and the async and await functionality",
   "main": "lib/util.js",
