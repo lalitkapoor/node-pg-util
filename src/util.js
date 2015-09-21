@@ -19,16 +19,19 @@ export default function(connStr, pathToSQLFiles) {
     },
 
     query: async (client, text, vals) => {
+      let callDone = false // if a client is passed in don't call done
+
       if (!client || typeof(client.query) !== 'function') {
         vals = text
         text = client
 
         client = await db.getClient()
+        callDone = true
       }
 
       return new Promise((resolve, reject) => {
         client.query(text, vals, (error, result) => {
-          client.done()
+          if (callDone) client.done()
           if (error) return reject(error)
           return resolve(result.rows)
         })
@@ -54,17 +57,21 @@ export default function(connStr, pathToSQLFiles) {
   })
 
   db.run = async (client, name, vals) => {
+    let callDone = false // if a client is passed in don't call done
+
     if (!client || typeof(client.query) !== 'function') {
       vals = name
       name = client
+
       client = await db.getClient()
+      callDone = true
     }
 
     const queryFn = client.query.bind(client)
 
     return new Promise((resolve, reject) => {
       box._run(queryFn, name, vals, (error, result) => {
-        client.done()
+        if (callDone) client.done()
         if (error) return reject(error)
         return resolve(result.rows)
       })

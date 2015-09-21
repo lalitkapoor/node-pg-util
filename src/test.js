@@ -39,12 +39,14 @@ describe('pg-util', function() {
     it('should perform a query with a specified client', async function() {
       const client = await this.db.getClient()
       const rows = await this.db.query(client, q)
+      client.done()
       should.equal(rows[0].name, param)
     })
 
     it('should perform a parameterized query with a specified client', async function() {
       const client = await this.db.getClient()
       const rows = await this.db.query(client, qParam, [param])
+      client.done()
       should.equal(rows[0].name, param)
     })
   })
@@ -63,12 +65,14 @@ describe('pg-util', function() {
     it('should run a query returning the first row with a specified client', async function() {
       const client = await this.db.getClient()
       const row = await this.db.one(client, q)
+      client.done()
       should.equal(row.name, param)
     })
 
     it('should run a query returning the first row with a specified client (parameterized)', async function() {
       const client = await this.db.getClient()
       const row = await this.db.one(client, qParam, [param])
+      client.done()
       should.equal(row.name, param)
     })
   })
@@ -87,12 +91,14 @@ describe('pg-util', function() {
     it('should run a query using a given sql file and client', async function() {
       const client = await this.db.getClient()
       const rows = await this.db.run(client, 'select')
+      client.done()
       should.equal(rows[0].name, param)
     })
 
     it('should run a query using a given sql file and client (parameterized)', async function() {
       const client = await this.db.getClient()
       const rows = await this.db.run(client, 'select-param', [param])
+      client.done()
       should.equal(rows[0].name, param)
     })
   })
@@ -111,13 +117,50 @@ describe('pg-util', function() {
     it('should run a query returning the first row using a given sql file and client', async function() {
       const client = await this.db.getClient()
       const row = await this.db.first(client, 'select')
+      client.done()
       should.equal(row.name, param)
     })
 
     it('should run a query returning the first row using a given sql file and client (parameterized)', async function() {
       const client = await this.db.getClient()
       const row = await this.db.first(client, 'select-param', [param])
+      client.done()
       should.equal(row.name, param)
+    })
+  })
+
+  describe('transactions', function() {
+    it('should re-use the same client', async function() {
+      const createTableSQL = `CREATE TEMP TABLE boo (
+        name TEXT NOT NULL,
+        email TEXT NOT NULL PRIMARY KEY
+      );`
+      const insertSQL = `INSERT INTO boo(name, email) VALUES ('John Doe', 'test@test.com');`
+      const selectSQL = 'SELECT * FROM boo;'
+
+      const client1 = await this.db.getClient()
+      const client2 = await this.db.getClient()
+
+      await this.db.query(client1, 'BEGIN')
+      await this.db.query(client1, createTableSQL)
+      await this.db.query(client1, insertSQL)
+
+      let row = null
+
+      // should return a row when using the client used in the transaction
+      row = await this.db.one(client1, selectSQL)
+      should.equal(row.name, 'John Doe')
+      should.equal(row.email, 'test@test.com')
+
+      // should error with a client not used for the transaction
+      try {
+        row = await this.db.one(client2, selectSQL)
+      } catch (error) {
+        should.exist(error)
+        should.equal(error.code, '42P01')
+      }
+
+      await this.db.query(client1, 'ABORT')
     })
   })
 })
