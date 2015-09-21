@@ -138,29 +138,29 @@ describe('pg-util', function() {
       const insertSQL = `INSERT INTO boo(name, email) VALUES ('John Doe', 'test@test.com');`
       const selectSQL = 'SELECT * FROM boo;'
 
-      const client1 = await this.db.getClient()
-      const client2 = await this.db.getClient()
+      const client = await this.db.getClient()
 
-      await this.db.query(client1, 'BEGIN')
-      await this.db.query(client1, createTableSQL)
-      await this.db.query(client1, insertSQL)
+      await this.db.query(client, 'BEGIN')
+      await this.db.query(client, createTableSQL)
+      await this.db.query(client, insertSQL)
 
       let row = null
 
       // should return a row when using the client used in the transaction
-      row = await this.db.one(client1, selectSQL)
+      row = await this.db.one(client, selectSQL)
       should.equal(row.name, 'John Doe')
       should.equal(row.email, 'test@test.com')
 
       // should error with a client not used for the transaction
       try {
-        row = await this.db.one(client2, selectSQL)
+        row = await this.db.one(selectSQL)
+        should.not.exist(row)
       } catch (error) {
         should.exist(error)
         should.equal(error.code, '42P01')
       }
 
-      await this.db.query(client1, 'ABORT')
+      await this.db.query(client, 'ABORT')
     })
   })
 })
