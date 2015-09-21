@@ -1,0 +1,41 @@
+{
+  "name": "node-pg-util",
+  "version": "1.0.0",
+  "description": "postgresql utils - using promises and the async and await functionality",
+  "main": "lib/db.js",
+  "scripts": {
+    "test": "npm run compile && mocha lib/test.js",
+    "compile": "babel --stage 0 --optional runtime -d lib/ src/",
+    "prepublish": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalitkapoor/node-pg-util.git"
+  },
+  "keywords": [
+    "postgresql",
+    "postgres",
+    "es6",
+    "es7",
+    "async",
+    "await"
+  ],
+  "author": "Lalit Kapoor <lalitkapoor@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lalitkapoor/node-pg-util/issues"
+  },
+  "homepage": "https://github.com/lalitkapoor/node-pg-util#readme",
+  "dependencies": {
+    "bluebird": "^2.10.0",
+    "pg": "^4.4.2",
+    "querybox": "^0.2.0"
+  },
+  "devDependencies": {
+    "app-root-path": "^1.0.0",
+    "babel": "^5.8.23",
+    "babel-runtime": "^5.8.24",
+    "mocha": "^2.3.2",
+    "should": "^7.1.0"
+  }
+}
