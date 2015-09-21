@@ -131,7 +131,7 @@ describe('pg-util', function() {
 
   describe('transactions', function() {
     it('should re-use the same client', async function() {
-      const createTableSQL = `CREATE TEMP TABLE boo (
+      const createTableSQL = `CREATE TABLE boo (
         name TEXT NOT NULL,
         email TEXT NOT NULL PRIMARY KEY
       );`
