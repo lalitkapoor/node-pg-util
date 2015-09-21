@@ -2,7 +2,7 @@
   "name": "node-pg-util",
   "version": "1.0.0",
   "description": "postgresql utils - using promises and the async and await functionality",
-  "main": "lib/db.js",
+  "main": "lib/util.js",
   "scripts": {
     "test": "npm run compile && mocha lib/test.js",
     "compile": "babel --stage 0 --optional runtime -d lib/ src/",
