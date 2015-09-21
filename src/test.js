@@ -1,6 +1,7 @@
 import path from 'path'
 import should from 'should'
 import appRoot from 'app-root-path'
+import pg from 'pg.js'
 
 import pgUtil from './util'
 

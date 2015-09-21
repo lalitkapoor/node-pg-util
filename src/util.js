@@ -1,7 +1,18 @@
 import Promise from 'bluebird'
 
-import pg from 'pg'
 import querybox from 'querybox'
+
+let pg = null
+
+try {
+  pg = require('pg')
+} catch(e) {
+  try {
+    pg = require('pg.js')
+  } catch(e) {
+    throw new Error("Could not require pg or pg.js - please install one or the other")
+  }
+}
 
 export default function(connStr, pathToSQLFiles) {
   const db = {

@@ -28,7 +28,6 @@
   "homepage": "https://github.com/lalitkapoor/node-pg-util#readme",
   "dependencies": {
     "bluebird": "^2.10.0",
-    "pg": "^4.4.2",
     "querybox": "^0.2.0"
   },
   "devDependencies": {
@@ -36,6 +35,7 @@
     "babel": "^5.8.23",
     "babel-runtime": "^5.8.24",
     "mocha": "^2.3.2",
+    "pg.js": "^4.1.1",
     "should": "^7.1.0"
   }
 }
