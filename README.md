@@ -1,6 +1,8 @@
 # node-pg-util
 Utility Belt for PostgreSQL
 
+`npm install pg-util`
+
 The goal of this library is to make writing commons database tasks more succinct:
 
 - getting a client `#getClient()`
