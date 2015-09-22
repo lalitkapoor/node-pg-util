@@ -1,0 +1,12 @@
+language: node_js
+addons:
+  postgresql: "9.3"
+before_script:
+  - psql -c 'create database node_pg_util;' -U postgres -d postgres
+env:
+  - PGHOST='127.0.0.1' PGDATABASE='node_pg_util' PGUSER='postgres'
+node_js:
+  - "0.10"
+  - "0.12"
+  - "4.0"
+  - "4.1"
