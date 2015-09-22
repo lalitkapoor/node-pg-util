@@ -1,4 +1,4 @@
-# node-pg-util
+# node-pg-util [![Build Status](https://travis-ci.org/lalitkapoor/node-pg-util.svg?branch=travis-ci)](https://travis-ci.org/lalitkapoor/node-pg-util)
 Utility Belt for PostgreSQL
 
 `npm install pg-util`
