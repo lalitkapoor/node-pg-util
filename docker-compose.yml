@@ -1,0 +1,13 @@
+version: '2'
+services:
+  app:
+    build: .
+    environment:
+      PGHOST: 'db'
+      PGUSER: 'postgres'
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: postgres
