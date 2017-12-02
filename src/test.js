@@ -139,6 +139,40 @@ describe('pg-util', function() {
       const insertSQL = `INSERT INTO boo(name, email) VALUES ('John Doe', 'test@test.com');`
       const selectSQL = 'SELECT * FROM boo;'
 
+      await this.db.transaction(async (tx) => {
+        const ct = await tx.query(createTableSQL)
+        const i = await tx.query(insertSQL)
+
+        let row = null
+
+        // should return a row when using the client used in the transaction
+        row = await tx.one(selectSQL)
+        should.equal(row.name, 'John Doe')
+        should.equal(row.email, 'test@test.com')
+
+        // should error with a client not used for the transaction
+        try {
+          row = await this.db.one(selectSQL)
+          should.not.exist(row)
+        } catch (error) {
+          should.exist(error)
+          should.equal(error.code, '42P01')
+        }
+
+        await tx.query('ABORT')
+      })
+    })
+  })
+
+  describe('transactions without helper', function() {
+    it('should re-use the same client', async function() {
+      const createTableSQL = `CREATE TABLE boo (
+        name TEXT NOT NULL,
+        email TEXT NOT NULL PRIMARY KEY
+      );`
+      const insertSQL = `INSERT INTO boo(name, email) VALUES ('John Doe', 'test@test.com');`
+      const selectSQL = 'SELECT * FROM boo;'
+
       const client = await this.db.getClient()
 
       await this.db.query(client, 'BEGIN')
