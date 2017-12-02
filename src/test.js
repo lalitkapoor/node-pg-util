@@ -131,7 +131,35 @@ describe('pg-util', function() {
   })
 
   describe('transactions', function() {
-    it('should re-use the same client', async function() {
+    it('should work with #query', async function() {
+      await this.db.transaction(async (tx) => {
+        const rows = await tx.query(q)
+        should.equal(rows[0].name, param)
+      })
+    })
+
+    it('should work with #one', async function() {
+      await this.db.transaction(async (tx) => {
+        const row = await tx.one(q)
+        should.equal(row.name, param)
+      })
+    })
+
+    it('should work with #run', async function() {
+      await this.db.transaction(async (tx) => {
+        const rows = await tx.run('select')
+        should.equal(rows[0].name, param)
+      })
+    })
+
+    it('should work with #first', async function() {
+      await this.db.transaction(async (tx) => {
+        const row = await tx.first('select')
+        should.equal(row.name, param)
+      })
+    })
+
+    it('should re-use the same client for multiple queries', async function() {
       const createTableSQL = `CREATE TABLE boo (
         name TEXT NOT NULL,
         email TEXT NOT NULL PRIMARY KEY
@@ -140,12 +168,14 @@ describe('pg-util', function() {
       const selectSQL = 'SELECT * FROM boo;'
 
       await this.db.transaction(async (tx) => {
+        // test #query
         await tx.query(createTableSQL)
         await tx.query(insertSQL)
 
         let row = null
 
         // should return a row when using the client used in the transaction
+        // test #one
         row = await tx.one(selectSQL)
         should.equal(row.name, 'John Doe')
         should.equal(row.email, 'test@test.com')
@@ -164,8 +194,8 @@ describe('pg-util', function() {
     })
   })
 
-  describe('transactions without helper', function() {
-    it('should re-use the same client', async function() {
+  describe('transactions without the #transaction helper', function() {
+    it('should not allow clients outside of a transaction to see non-commited values', async function() {
       const createTableSQL = `CREATE TABLE boo (
         name TEXT NOT NULL,
         email TEXT NOT NULL PRIMARY KEY
