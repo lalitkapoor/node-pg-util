@@ -140,8 +140,8 @@ describe('pg-util', function() {
       const selectSQL = 'SELECT * FROM boo;'
 
       await this.db.transaction(async (tx) => {
-        const ct = await tx.query(createTableSQL)
-        const i = await tx.query(insertSQL)
+        await tx.query(createTableSQL)
+        await tx.query(insertSQL)
 
         let row = null
 

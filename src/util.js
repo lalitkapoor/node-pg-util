@@ -53,19 +53,18 @@ export default function(connStr, pathToSQLFiles) {
     },
 
     transaction: async (asyncFunc) => {
-      let client = null
+      const client = await db.getClient()
+      const tx = {
+        query: db.query.bind(null, client),
+        one: db.one.bind(null, client)
+      }
+
+      if (pathToSQLFiles) {
+        tx.run = db.run.bind(null, client)
+        tx.first = db.first.bind(null, client)
+      }
+
       try {
-         client = await db.getClient()
-        const tx = {
-          query: db.query.bind(null, client),
-          one: db.one.bind(null, client)
-        }
-
-        if (pathToSQLFiles) {
-          tx.run = db.run.bind(null, client)
-          tx.first = db.run.bind(null, client)
-        }
-
         await db.query(client, 'BEGIN')
         await asyncFunc(tx)
         await db.query(client, 'COMMIT')
@@ -73,7 +72,7 @@ export default function(connStr, pathToSQLFiles) {
         await db.query(client, 'ABORT')
         throw error
       } finally {
-        if (client) client.done()
+        client.done()
       }
     }
   }
