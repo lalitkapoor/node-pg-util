@@ -28,7 +28,7 @@
   "homepage": "https://github.com/lalitkapoor/node-pg-util#readme",
   "dependencies": {
     "babel-runtime": "^5.8.24",
-    "querybox": "^0.2.0"
+    "querybox": "lalitkapoor/node-querybox#v1.0.0"
   },
   "devDependencies": {
     "app-root-path": "^1.0.0",
