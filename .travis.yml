@@ -6,7 +6,8 @@ before_script:
 env:
   - PGHOST='127.0.0.1' PGDATABASE='node_pg_util' PGUSER='postgres'
 node_js:
-  - "0.10"
-  - "0.12"
-  - "4.0"
-  - "4.1"
+  - "4"
+  - "6"
+  - "8"
+  - "lts/*"
+  - "node"
